@@ -70,20 +70,20 @@ function drawDog(x, y, dir, pwr) {
     if(dir < 0) { ctx.translate(24, 0); ctx.scale(-1, 1); }
     if(pwr > 0) { ctx.shadowBlur = 15; ctx.shadowColor = 'red'; }
     ctx.fillStyle = c.main;
-    ctx.fillRect(0, 10, 20, 12); // Body
-    ctx.fillRect(14, 3, 10, 10); // Head
+    ctx.fillRect(0, 10, 20, 12); 
+    ctx.fillRect(14, 3, 10, 10); 
     ctx.fillStyle = c.spot;
-    ctx.fillRect(14, 1, 4, 6); // Ear
+    ctx.fillRect(14, 1, 4, 6); 
     ctx.fillStyle = c.main;
-    ctx.fillRect(2, 22, 4, 4); ctx.fillRect(16, 22, 4, 4); // Legs
-    ctx.fillRect(-3, 8, 4, 4); // Tail
+    ctx.fillRect(2, 22, 4, 4); ctx.fillRect(16, 22, 4, 4); 
+    ctx.fillRect(-3, 8, 4, 4); 
     ctx.fillStyle = '#000';
-    ctx.fillRect(22, 5, 3, 3); // Nose
+    ctx.fillRect(22, 5, 3, 3); 
     
     if(barkTimer > 0) {
         ctx.fillStyle = "white";
         ctx.font = "8px 'Press Start 2P'";
-        ctx.fillText("BARK!", 10, -10);
+        ctx.fillText("BARK!", 0, -5);
         barkTimer--;
     }
     ctx.restore();
@@ -116,9 +116,9 @@ function drawBed(x, y) {
     ctx.fillStyle = '#4a90d9';
     ctx.beginPath(); ctx.ellipse(x, y+10, 30, 10, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#ffdbac';
-    ctx.fillRect(x-5, y-10, 10, 10); // Human head
+    ctx.fillRect(x-5, y-10, 10, 10); 
     ctx.fillStyle = '#333';
-    ctx.fillRect(x-5, y-12, 10, 4); // Hair
+    ctx.fillRect(x-5, y-12, 10, 4); 
 }
 
 function update() {
@@ -147,12 +147,7 @@ function update() {
         if(!s.collected && Math.hypot(player.x-s.x, player.y-s.y) < 25) { s.collected = true; power = 300; }
     });
 
-    if(power > 0) {
-        power--;
-        document.getElementById('power-indicator').textContent = "STEAK POWER ACTIVE!";
-    } else {
-        document.getElementById('power-indicator').textContent = "";
-    }
+    if(power > 0) power--;
 
     vacs.forEach(v => {
         v.x += v.dir * v.speed;
@@ -167,7 +162,7 @@ function die() {
     lives--;
     updateUI();
     if(lives <= 0) {
-        showOverlay("GAME OVER", "Too many vacuums!", "TRY AGAIN", () => { lives=3; curLvl=0; init(0); });
+        showOverlay("GAME OVER", "The vacuum won this time!", "RESTART", () => { lives=3; curLvl=0; init(0); });
     } else {
         init(curLvl);
     }
@@ -175,9 +170,9 @@ function die() {
 
 function win() {
     if(curLvl < LEVELS.length - 1) {
-        showOverlay("LEVEL CLEAR!", "You found your bed!", "NEXT LEVEL", () => { curLvl++; init(curLvl); });
+        showOverlay("LEVEL CLEAR!", "Back to the bed!", "NEXT LEVEL", () => { curLvl++; init(curLvl); });
     } else {
-        showOverlay("YOU WON!", "The best dog ever!", "REPLAY", () => { curLvl=0; lives=3; init(0); });
+        showOverlay("CHAMPION!", "You are the best dog!", "REPLAY", () => { curLvl=0; lives=3; init(0); });
     }
 }
 
@@ -205,15 +200,15 @@ function showOverlay(t, m, b, cb) {
     document.getElementById('ov-msg').textContent = m;
     const btn = document.getElementById('start-btn');
     btn.textContent = b;
-    btn.onclick = () => {
+    btn.onclick = (e) => {
+        e.stopPropagation();
         ov.style.display = 'none';
-        if(cb) cb();
-        else init(curLvl); // Default init if no callback provided
+        if(cb) cb(); else init(curLvl);
         gameActive = true; 
     };
 }
 
-// Keyboard Controls
+// Controls
 window.onkeydown = e => { 
     if(e.code === 'ArrowLeft') { player.vx = -SPEED; player.dir = -1; }
     if(e.code === 'ArrowRight') { player.vx = SPEED; player.dir = 1; }
@@ -223,31 +218,27 @@ window.onkeyup = e => {
     if(e.code === 'ArrowLeft' || e.code === 'ArrowRight') player.vx = 0;
 };
 
-// Touch/Button Controls
-const btnLeft = document.getElementById('btn-left');
-const btnRight = document.getElementById('btn-right');
-const btnJump = document.getElementById('btn-jump');
-
-const handlePress = (btn, action, start) => {
-    const events = ['mousedown', 'touchstart'];
-    const endEvents = ['mouseup', 'mouseleave', 'touchend'];
-    
-    events.forEach(evt => btn.addEventListener(evt, (e) => {
+// On-screen Button Mapping
+const setupBtn = (id, action) => {
+    const b = document.getElementById(id);
+    const start = (e) => {
         e.preventDefault();
         if(action === 'left') { player.vx = -SPEED; player.dir = -1; }
         if(action === 'right') { player.vx = SPEED; player.dir = 1; }
         if(action === 'jump' && player.ground) { player.vy = JUMP; barkTimer = 20; }
-    }));
-    
-    endEvents.forEach(evt => btn.addEventListener(evt, (e) => {
-        if(action !== 'jump') player.vx = 0;
-    }));
+    };
+    const end = (e) => { e.preventDefault(); if(action !== 'jump') player.vx = 0; };
+    b.addEventListener('touchstart', start);
+    b.addEventListener('mousedown', start);
+    b.addEventListener('touchend', end);
+    b.addEventListener('mouseup', end);
 };
+setupBtn('btn-left', 'left');
+setupBtn('btn-right', 'right');
+setupBtn('btn-jump', 'jump');
 
-handlePress(btnLeft, 'left');
-handlePress(btnRight, 'right');
-handlePress(btnJump, 'jump');
-
-// Start the animation loop immediately
+// Initial Call
+setDog(0, document.querySelector('.color-opt'));
+showOverlay("🐾 Good Dog! 🐾", "Collect bones and avoid vacuums to get to your human!", "START PLAYING");
 loop();
 </script>
