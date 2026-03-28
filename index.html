@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Good Dog Adventure! 🐾</title>
+<title>{{PET_NAME}}'s Big Adventure! 🐾</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
-  background: #1a1a2e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-family: 'Press Start 2P', monospace;
-  overflow: hidden;
-  user-select: none;
+    background: #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+    user-select: none;
 }
 #ui {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 480px;
-  max-width: 95vw;
-  padding: 8px 4px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 480px;
+    max-width: 95vw;
+    padding: 8px 4px;
 }
 #ui span { color: #fff; font-size: 7px; text-shadow: 0 0 5px #000; }
 #hearts-ui { color: #ffd700 !important; }
 
 canvas {
-  display: block;
-  border: 4px solid #4a90d9;
-  background: #222;
-  image-rendering: pixelated;
-  touch-action: none;
-  max-width: 95vw;
+    display: block;
+    border: 4px solid #4a90d9;
+    background: #222;
+    image-rendering: pixelated;
+    touch-action: none;
+    max-width: 95vw;
 }
 #controls { display: flex; gap: 12px; margin-top: 12px; z-index: 2; }
 .btn {
-  background: #333;
-  border: 2px solid #4a90d9;
-  color: white;
-  padding: 15px 25px;
-  border-radius: 8px;
-  font-family: 'Press Start 2P';
-  cursor: pointer;
+    background: #333;
+    border: 2px solid #4a90d9;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-family: 'Press Start 2P';
+    cursor: pointer;
 }
 #overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  text-align: center;
-  padding: 20px;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    text-align: center;
+    padding: 20px;
 }
-#overlay h1 { color: #4a90d9; font-size: 18px; margin-bottom: 15px; }
-#overlay p { color: #ccc; font-size: 9px; line-height: 1.6; margin-bottom: 20px; white-space: pre-line; }
-.color-select { display: flex; gap: 10px; margin-bottom: 20px; }
+#overlay h1 { color: #4a90d9; font-size: 16px; margin-bottom: 15px; text-transform: uppercase; }
+#overlay p { color: #ccc; font-size: 8px; line-height: 1.8; margin-bottom: 20px; white-space: pre-line; }
+
+/* Color Grid */
+.color-select { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
 .color-opt { 
-    width: 40px; height: 40px; border: 3px solid #fff; cursor: pointer; border-radius: 5px;
+    width: 45px; height: 45px; border: 3px solid #fff; cursor: pointer; border-radius: 5px;
 }
-.active-opt { border-color: #4a90d9; transform: scale(1.1); }
+.active-opt { border-color: #4a90d9; transform: scale(1.1); box-shadow: 0 0 10px #4a90d9; }
+
 #start-btn {
-  background: #4a90d9; border: none; color: white;
-  padding: 15px 30px; font-family: 'Press Start 2P'; cursor: pointer;
+    background: #4a90d9; border: none; color: white;
+    padding: 15px 30px; font-family: 'Press Start 2P'; cursor: pointer; font-size: 10px;
 }
 #power-indicator { color: #ff4d4d; font-size: 8px; margin-top: 5px; height: 10px;}
 </style>
@@ -92,15 +96,20 @@ canvas {
 </div>
 
 <div id="overlay">
-  <h1 id="ov-title">🐾 Good Dog! 🐾</h1>
+  <h1 id="ov-title">{{PET_NAME}}'S ADVENTURE!</h1>
   <p id="ov-msg">The scary Vacuums are awake! 
     Collect Bones 🦴 and Steaks 🥩 
-    to reach the Dog Bed!</p>
+    to reach the cozy Dog Bed!
+    
+    With love from {{OWNER_NAME}}</p>
   
   <div class="color-select">
     <div class="color-opt active-opt" data-idx="0" style="background:#edc9af"></div>
     <div class="color-opt" data-idx="1" style="background:#333"></div>
     <div class="color-opt" data-idx="2" style="background:#ddd"></div>
+    <div class="color-opt" data-idx="3" style="background:#f1c40f"></div> 
+    <div class="color-opt" data-idx="4" style="background:#7e5835"></div>
+    <div class="color-opt" data-idx="5" style="background:#555"></div>
   </div>
 
   <button id="start-btn">START PLAYING</button>
@@ -112,17 +121,24 @@ window.onload = function() {
     const ctx = canvas.getContext('2d');
     const W = 480, H = 320;
 
+    // Placeholders for Python
+    const PET_NAME = "{{PET_NAME}}".includes("{{") ? "Good Dog" : "{{PET_NAME}}";
+    const OWNER_MSG = "{{OWNER_MESSAGE}}".includes("{{") ? "You found the bed!" : "{{OWNER_MESSAGE}}";
+
     const DOG_PALETTES = [
-        { main: '#edc9af', spot: '#d2b48c' }, 
-        { main: '#333333', spot: '#000000' }, 
-        { main: '#dddddd', spot: '#777777' }  
+        { main: '#edc9af', spot: '#d2b48c' }, // Tan
+        { main: '#333333', spot: '#000000' }, // Black
+        { main: '#dddddd', spot: '#777777' }, // White
+        { main: '#f1c40f', spot: '#e67e22' }, // Gold
+        { main: '#7e5835', spot: '#4e342e' }, // Brown
+        { main: '#95a5a6', spot: '#2c3e50' }  // Grey
     ];
+
     let selectedDog = 0;
     let gameActive = false;
     let curLvl = 0, score = 0, lives = 3, power = 0, barkTimer = 0;
     let player = { x:30, y:200, vx:0, vy:0, ground:false, dir:1 };
     let vacs = [], bones = [], steaks = [];
-    
     let jumpLocked = false; 
     const keys = { left: false, right: false, jump: false };
 
@@ -177,8 +193,16 @@ window.onload = function() {
         const wag = Math.sin(Date.now() / 50) * 3; 
         ctx.save();
         ctx.translate(x, y);
+
+        // NAME TAG
+        ctx.fillStyle = "white";
+        ctx.font = "6px 'Press Start 2P'";
+        ctx.textAlign = "center";
+        ctx.fillText(PET_NAME.toUpperCase(), 15, -8);
+
         if(dir < 0) { ctx.translate(28, 0); ctx.scale(-1, 1); }
         if(pwr > 0) { ctx.shadowBlur = 15; ctx.shadowColor = '#ff4d4d'; }
+        
         ctx.fillStyle = c.main;
         ctx.save();
         ctx.translate(2, 12);
@@ -196,10 +220,11 @@ window.onload = function() {
         ctx.fillRect(20, 4, 4, 10); 
         ctx.fillStyle = '#000';
         ctx.fillRect(25, 5, 2, 2);
+        
         if(barkTimer > 0) {
             ctx.fillStyle = "white";
             ctx.font = "8px 'Press Start 2P'";
-            ctx.fillText("BARK!", 15, -10);
+            ctx.fillText("BARK!", 15, -15);
             barkTimer--;
         }
         ctx.restore();
@@ -238,6 +263,10 @@ window.onload = function() {
         ctx.beginPath(); ctx.ellipse(x, y+10, 35, 12, 0, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#ffdbac'; ctx.fillRect(x-6, y-12, 12, 12);
         ctx.fillStyle = '#333'; ctx.fillRect(x-6, y-14, 12, 4);
+        if(score >= LEVELS[curLvl].goal) {
+            ctx.strokeStyle = "#ffd700"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.ellipse(x, y+10, 38, 15, 0, 0, Math.PI * 2); ctx.stroke();
+        }
     }
 
     function update() {
@@ -271,10 +300,10 @@ window.onload = function() {
         if(player.y > H) { lives--; if(lives<=0) showGameOver(); else init(curLvl); }
 
         bones.forEach(b => {
-            if(!b.collected && Math.hypot(player.x-b.x, player.y-b.y) < 25) { b.collected = true; score++; updateUI(); }
+            if(!b.collected && Math.hypot(player.x+15-b.x, player.y+15-b.y) < 25) { b.collected = true; score++; updateUI(); }
         });
         steaks.forEach(s => {
-            if(!s.collected && Math.hypot(player.x-s.x, player.y-s.y) < 25) { s.collected = true; power = 300; }
+            if(!s.collected && Math.hypot(player.x+15-s.x, player.y+15-s.y) < 25) { s.collected = true; power = 300; }
         });
 
         if(power > 0) power--;
@@ -295,21 +324,21 @@ window.onload = function() {
         document.getElementById('ov-title').textContent = title;
         document.getElementById('ov-msg').textContent = msg;
         document.getElementById('start-btn').textContent = btnText;
-        document.querySelector('.color-select').style.display = hideColors ? 'none' : 'flex';
+        document.querySelector('.color-select').style.display = hideColors ? 'none' : 'grid';
     }
 
     function showGameOver() {
         lives = 3; curLvl = 0;
-        showOverlay("GAME OVER", "The vacuums won!", "RETRY", false);
+        showOverlay("GAME OVER", `Try again, ${PET_NAME}!`, "RETRY", false);
     }
 
     function win() {
         if(curLvl < LEVELS.length - 1) {
             curLvl++;
-            showOverlay("LEVEL CLEAR!", "Back to the bed!", "NEXT LEVEL", true);
+            showOverlay("LEVEL CLEAR!", `Amazing job, ${PET_NAME}!`, "NEXT LEVEL", true);
         } else {
             curLvl = 0; lives = 3;
-            showOverlay("DOG CHAMPION!", "You found your human!", "PLAY AGAIN", false);
+            showOverlay("DOG CHAMPION!", OWNER_MSG, "PLAY AGAIN", false);
         }
     }
 
