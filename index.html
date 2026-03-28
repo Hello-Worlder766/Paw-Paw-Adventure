@@ -166,8 +166,6 @@ body {
 </head>
 <body>
 
-<canvas id="stars-bg"></canvas>
-
 <div id="ui">
   <span id="level-ui">LEVEL 1</span>
   <span id="treats-ui">TREATS: 0/5</span>
@@ -204,7 +202,9 @@ const PET_NAME = '{{PET_NAME}}'
 const OWNER_MESSAGE = '{{OWNER_MESSAGE}}'
 
 // ---- STAR BACKGROUND ----
-const starCanvas = document.getElementById('stars-bg')
+const starCanvas = document.createElement('canvas')
+starCanvas.id = 'stars-bg'
+document.body.appendChild(starCanvas)
 const starCtx = starCanvas.getContext('2d')
 function resizeStars(){
   starCanvas.width = window.innerWidth
