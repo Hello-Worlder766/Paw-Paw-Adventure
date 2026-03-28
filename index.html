@@ -113,9 +113,9 @@ window.onload = function() {
     const W = 480, H = 320;
 
     const DOG_PALETTES = [
-        { main: '#edc9af', spot: '#d2b48c' },
-        { main: '#333333', spot: '#000000' },
-        { main: '#dddddd', spot: '#4a90d9' }
+        { main: '#edc9af', spot: '#d2b48c' }, // Golden
+        { main: '#333333', spot: '#000000' }, // Black
+        { main: '#dddddd', spot: '#777777' }  // Husky/Grey
     ];
     let selectedDog = 0;
     let gameActive = false;
@@ -162,52 +162,101 @@ window.onload = function() {
 
     function drawDog(x, y, dir, pwr) {
         const c = DOG_PALETTES[selectedDog];
+        const wag = Math.sin(Date.now() / 50) * 3; // Wag animation
         ctx.save();
         ctx.translate(x, y);
-        if(dir < 0) { ctx.translate(24, 0); ctx.scale(-1, 1); }
-        if(pwr > 0) { ctx.shadowBlur = 15; ctx.shadowColor = 'red'; }
+        if(dir < 0) { ctx.translate(28, 0); ctx.scale(-1, 1); }
+        
+        if(pwr > 0) { ctx.shadowBlur = 15; ctx.shadowColor = '#ff4d4d'; }
+
+        // Tail (Animated)
         ctx.fillStyle = c.main;
-        ctx.fillRect(0, 10, 20, 12); 
-        ctx.fillRect(14, 3, 10, 10); 
-        ctx.fillStyle = c.spot;
-        ctx.fillRect(14, 1, 4, 6); 
+        ctx.save();
+        ctx.translate(2, 12);
+        ctx.rotate(wag * Math.PI / 180);
+        ctx.fillRect(-6, -2, 6, 4);
+        ctx.restore();
+
+        // Legs
         ctx.fillStyle = c.main;
-        ctx.fillRect(2, 22, 4, 4); ctx.fillRect(16, 22, 4, 4); 
-        ctx.fillRect(-3, 8, 4, 4); 
+        ctx.fillRect(4, 22, 5, 6); 
+        ctx.fillRect(16, 22, 5, 6);
+
+        // Body
+        ctx.fillRect(2, 10, 22, 14); 
+
+        // Neck
+        ctx.fillRect(18, 6, 8, 8);
+
+        // Head
+        ctx.fillRect(20, 2, 12, 10); // Skull
+        ctx.fillRect(28, 6, 8, 6);   // Muzzle/Snout
+
+        // Nose
         ctx.fillStyle = '#000';
-        ctx.fillRect(22, 5, 3, 3); 
+        ctx.fillRect(34, 6, 3, 3);
+
+        // Floppy Ears (The key to not being a goat!)
+        ctx.fillStyle = c.spot;
+        ctx.fillRect(20, 4, 4, 10); 
+
+        // Eye
+        ctx.fillStyle = '#000';
+        ctx.fillRect(25, 5, 2, 2);
+        
         if(barkTimer > 0) {
             ctx.fillStyle = "white";
             ctx.font = "8px 'Press Start 2P'";
-            ctx.fillText("BARK!", 0, -5);
+            ctx.fillText("BARK!", 15, -10);
             barkTimer--;
         }
         ctx.restore();
     }
 
+    function drawSparkle(x, y) {
+        if(Math.random() > 0.1) return;
+        ctx.fillStyle = "white";
+        const offset = (Math.sin(Date.now()/100) * 10);
+        ctx.fillRect(x + offset, y - offset, 2, 2);
+    }
+
     function drawVacuum(v) {
-        ctx.fillStyle = '#555';
-        ctx.fillRect(v.x - 15, v.y + 5, 30, 15);
+        ctx.fillStyle = '#444';
+        ctx.fillRect(v.x - 15, v.y + 10, 30, 12); // Base
+        ctx.fillStyle = '#222';
+        ctx.fillRect(v.x - 2, v.y - 5, 4, 15);   // Handle
         ctx.fillStyle = '#ff0000';
-        if(Math.floor(Date.now()/200) % 2) ctx.fillRect(v.x + 8, v.y + 7, 4, 4);
+        if(Math.floor(Date.now()/150) % 2) ctx.fillRect(v.x + 8, v.y + 12, 4, 4); // Blinking light
     }
 
     function drawBone(x, y) {
-        ctx.fillStyle = '#fff'; ctx.fillRect(x-6, y-2, 12, 4);
+        drawSparkle(x, y);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(x-6, y-2, 12, 4);
         ctx.fillRect(x-8, y-4, 4, 4); ctx.fillRect(x-8, y+0, 4, 4);
         ctx.fillRect(x+4, y-4, 4, 4); ctx.fillRect(x+4, y+0, 4, 4);
     }
 
     function drawSteak(x, y) {
-        ctx.fillStyle = '#a22'; ctx.fillRect(x-10, y-6, 20, 12);
-        ctx.fillStyle = '#fff'; ctx.fillRect(x+2, y-2, 4, 4);
+        drawSparkle(x, y);
+        ctx.fillStyle = '#a22';
+        // Meat slab
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI*2);
+        ctx.fill();
+        // Bone detail
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x-2, y-2, 8, 4);
+        ctx.beginPath();
+        ctx.arc(x+6, y, 3, 0, Math.PI*2);
+        ctx.fill();
     }
 
     function drawBed(x, y) {
         ctx.fillStyle = '#4a90d9';
-        ctx.beginPath(); ctx.ellipse(x, y+10, 30, 10, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#ffdbac'; ctx.fillRect(x-5, y-10, 10, 10);
-        ctx.fillStyle = '#333'; ctx.fillRect(x-5, y-12, 10, 4);
+        ctx.beginPath(); ctx.ellipse(x, y+10, 35, 12, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ffdbac'; ctx.fillRect(x-6, y-12, 12, 12); // Human
+        ctx.fillStyle = '#333'; ctx.fillRect(x-6, y-14, 12, 4); // Hair
     }
 
     function update() {
@@ -219,13 +268,13 @@ window.onload = function() {
 
         const L = LEVELS[curLvl];
         L.platforms.forEach(p => {
-            if(player.x+20 > p.x && player.x < p.x+p.w && player.y+26 > p.y && player.y+26 < p.y+p.h) {
-                if(player.vy > 0) { player.y = p.y - 26; player.vy = 0; player.ground = true; }
+            if(player.x+25 > p.x && player.x < p.x+p.w && player.y+28 > p.y && player.y+28 < p.y+p.h) {
+                if(player.vy > 0) { player.y = p.y - 28; player.vy = 0; player.ground = true; }
             }
         });
 
         if(player.x < 0) player.x = 0;
-        if(player.x > W-24) player.x = W-24;
+        if(player.x > W-30) player.x = W-30;
         if(player.y > H) { lives--; init(curLvl); if(lives<=0) showGameOver(); }
 
         bones.forEach(b => {
@@ -241,35 +290,35 @@ window.onload = function() {
         vacs.forEach(v => {
             v.x += v.dir * v.speed;
             if(Math.abs(v.x - v.startX) > v.range) v.dir *= -1;
-            if(power <= 0 && Math.hypot(player.x+10-v.x, player.y+10-v.y) < 20) { lives--; init(curLvl); if(lives<=0) showGameOver(); }
+            if(power <= 0 && Math.hypot(player.x+15-v.x, player.y+15-v.y) < 22) { lives--; init(curLvl); if(lives<=0) showGameOver(); }
         });
 
         if(score >= L.goal && Math.hypot(player.x - L.bed.x, player.y - L.bed.y) < 40) win();
     }
 
-    function showGameOver() {
+    function showOverlay(title, msg, btnText, hideColors = false) {
         gameActive = false;
+        const ov = document.getElementById('overlay');
+        const selector = document.querySelector('.color-select');
+        ov.style.display = 'flex';
+        document.getElementById('ov-title').textContent = title;
+        document.getElementById('ov-msg').textContent = msg;
+        document.getElementById('start-btn').textContent = btnText;
+        selector.style.display = hideColors ? 'none' : 'flex';
+    }
+
+    function showGameOver() {
         lives = 3; curLvl = 0;
-        document.getElementById('overlay').style.display = 'flex';
-        document.getElementById('ov-title').textContent = "GAME OVER";
-        document.getElementById('ov-msg').textContent = "The vacuums got you!";
-        document.getElementById('start-btn').textContent = "TRY AGAIN";
+        showOverlay("GAME OVER", "The vacuums won!", "RETRY", false);
     }
 
     function win() {
-        gameActive = false;
         if(curLvl < LEVELS.length - 1) {
             curLvl++;
-            document.getElementById('overlay').style.display = 'flex';
-            document.getElementById('ov-title').textContent = "LEVEL CLEAR!";
-            document.getElementById('ov-msg').textContent = "Found the bed!";
-            document.getElementById('start-btn').textContent = "NEXT LEVEL";
+            showOverlay("LEVEL CLEAR!", "Back to the bed!", "NEXT LEVEL", true);
         } else {
             curLvl = 0; lives = 3;
-            document.getElementById('overlay').style.display = 'flex';
-            document.getElementById('ov-title').textContent = "WINNER!";
-            document.getElementById('ov-msg').textContent = "Best dog ever!";
-            document.getElementById('start-btn').textContent = "REPLAY";
+            showOverlay("DOG CHAMPION!", "You found your human!", "PLAY AGAIN", false);
         }
     }
 
@@ -289,7 +338,6 @@ window.onload = function() {
         requestAnimationFrame(loop);
     }
 
-    // BUTTON LISTENERS
     document.getElementById('start-btn').addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('overlay').style.display = 'none';
@@ -305,7 +353,6 @@ window.onload = function() {
         });
     });
 
-    // CONTROLS
     const setMove = (dir) => { 
         if(dir === 0) player.vx = 0;
         else { player.vx = dir * 3.2; player.dir = dir; }
