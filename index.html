@@ -113,15 +113,18 @@ window.onload = function() {
     const W = 480, H = 320;
 
     const DOG_PALETTES = [
-        { main: '#edc9af', spot: '#d2b48c' }, // Golden
-        { main: '#333333', spot: '#000000' }, // Black
-        { main: '#dddddd', spot: '#777777' }  // Husky/Grey
+        { main: '#edc9af', spot: '#d2b48c' }, 
+        { main: '#333333', spot: '#000000' }, 
+        { main: '#dddddd', spot: '#777777' }  
     ];
     let selectedDog = 0;
     let gameActive = false;
     let curLvl = 0, score = 0, lives = 3, power = 0, barkTimer = 0;
     let player = { x:30, y:200, vx:0, vy:0, ground:false, dir:1 };
     let vacs = [], bones = [], steaks = [];
+    
+    // Improved Input Tracking
+    const keys = { left: false, right: false, jump: false };
 
     const LEVELS = [
       {
@@ -162,14 +165,12 @@ window.onload = function() {
 
     function drawDog(x, y, dir, pwr) {
         const c = DOG_PALETTES[selectedDog];
-        const wag = Math.sin(Date.now() / 50) * 3; // Wag animation
+        const wag = Math.sin(Date.now() / 50) * 3; 
         ctx.save();
         ctx.translate(x, y);
         if(dir < 0) { ctx.translate(28, 0); ctx.scale(-1, 1); }
-        
         if(pwr > 0) { ctx.shadowBlur = 15; ctx.shadowColor = '#ff4d4d'; }
 
-        // Tail (Animated)
         ctx.fillStyle = c.main;
         ctx.save();
         ctx.translate(2, 12);
@@ -177,30 +178,15 @@ window.onload = function() {
         ctx.fillRect(-6, -2, 6, 4);
         ctx.restore();
 
-        // Legs
-        ctx.fillStyle = c.main;
-        ctx.fillRect(4, 22, 5, 6); 
-        ctx.fillRect(16, 22, 5, 6);
-
-        // Body
+        ctx.fillRect(4, 22, 5, 6); ctx.fillRect(16, 22, 5, 6);
         ctx.fillRect(2, 10, 22, 14); 
-
-        // Neck
         ctx.fillRect(18, 6, 8, 8);
-
-        // Head
-        ctx.fillRect(20, 2, 12, 10); // Skull
-        ctx.fillRect(28, 6, 8, 6);   // Muzzle/Snout
-
-        // Nose
+        ctx.fillRect(20, 2, 12, 10); 
+        ctx.fillRect(28, 6, 8, 6);   
         ctx.fillStyle = '#000';
         ctx.fillRect(34, 6, 3, 3);
-
-        // Floppy Ears (The key to not being a goat!)
         ctx.fillStyle = c.spot;
         ctx.fillRect(20, 4, 4, 10); 
-
-        // Eye
         ctx.fillStyle = '#000';
         ctx.fillRect(25, 5, 2, 2);
         
@@ -213,24 +199,16 @@ window.onload = function() {
         ctx.restore();
     }
 
-    function drawSparkle(x, y) {
-        if(Math.random() > 0.1) return;
-        ctx.fillStyle = "white";
-        const offset = (Math.sin(Date.now()/100) * 10);
-        ctx.fillRect(x + offset, y - offset, 2, 2);
-    }
-
     function drawVacuum(v) {
         ctx.fillStyle = '#444';
-        ctx.fillRect(v.x - 15, v.y + 10, 30, 12); // Base
+        ctx.fillRect(v.x - 15, v.y + 10, 30, 12);
         ctx.fillStyle = '#222';
-        ctx.fillRect(v.x - 2, v.y - 5, 4, 15);   // Handle
+        ctx.fillRect(v.x - 2, v.y - 5, 4, 15);
         ctx.fillStyle = '#ff0000';
-        if(Math.floor(Date.now()/150) % 2) ctx.fillRect(v.x + 8, v.y + 12, 4, 4); // Blinking light
+        if(Math.floor(Date.now()/150) % 2) ctx.fillRect(v.x + 8, v.y + 12, 4, 4);
     }
 
     function drawBone(x, y) {
-        drawSparkle(x, y);
         ctx.fillStyle = '#fff';
         ctx.fillRect(x-6, y-2, 12, 4);
         ctx.fillRect(x-8, y-4, 4, 4); ctx.fillRect(x-8, y+0, 4, 4);
@@ -238,30 +216,49 @@ window.onload = function() {
     }
 
     function drawSteak(x, y) {
-        drawSparkle(x, y);
-        ctx.fillStyle = '#a22';
-        // Meat slab
+        // Steak Sparkle only
+        if(Math.random() > 0.9) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(x + (Math.random()*20-10), y + (Math.random()*20-10), 2, 2);
+        }
+        ctx.save();
+        ctx.translate(x, y);
+        // T-Bone Shape
+        ctx.fillStyle = '#822'; // Dark meat
         ctx.beginPath();
-        ctx.arc(x, y, 10, 0, Math.PI*2);
+        ctx.moveTo(-12, -8); ctx.lineTo(12, -10); ctx.lineTo(14, 6); ctx.lineTo(-8, 10);
+        ctx.closePath();
         ctx.fill();
-        // Bone detail
-        ctx.fillStyle = 'white';
-        ctx.fillRect(x-2, y-2, 8, 4);
-        ctx.beginPath();
-        ctx.arc(x+6, y, 3, 0, Math.PI*2);
-        ctx.fill();
+        // The "T" Bone
+        ctx.fillStyle = '#eee';
+        ctx.fillRect(-2, -6, 3, 14); // Vertical
+        ctx.fillRect(-8, -6, 12, 3); // Horizontal
+        ctx.restore();
     }
 
     function drawBed(x, y) {
         ctx.fillStyle = '#4a90d9';
         ctx.beginPath(); ctx.ellipse(x, y+10, 35, 12, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#ffdbac'; ctx.fillRect(x-6, y-12, 12, 12); // Human
-        ctx.fillStyle = '#333'; ctx.fillRect(x-6, y-14, 12, 4); // Hair
+        ctx.fillStyle = '#ffdbac'; ctx.fillRect(x-6, y-12, 12, 12);
+        ctx.fillStyle = '#333'; ctx.fillRect(x-6, y-14, 12, 4);
     }
 
     function update() {
         if(!gameActive) return;
-        player.vy += 0.5;
+
+        // Apply Horizontal movement based on keys held
+        if (keys.left) { player.vx = -3.2; player.dir = -1; }
+        else if (keys.right) { player.vx = 3.2; player.dir = 1; }
+        else { player.vx = 0; }
+
+        // Apply Jump
+        if (keys.jump && player.ground) {
+            player.vy = -10;
+            player.ground = false;
+            barkTimer = 20;
+        }
+
+        player.vy += 0.5; // Gravity
         player.x += player.vx;
         player.y += player.vy;
         player.ground = false;
@@ -353,27 +350,30 @@ window.onload = function() {
         });
     });
 
-    const setMove = (dir) => { 
-        if(dir === 0) player.vx = 0;
-        else { player.vx = dir * 3.2; player.dir = dir; }
+    // Touch/Mobile Button Handlers
+    const bindBtn = (id, key) => {
+        const el = document.getElementById(id);
+        el.addEventListener('mousedown', (e) => { e.preventDefault(); keys[key] = true; });
+        el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
+        el.addEventListener('mouseup', (e) => { e.preventDefault(); keys[key] = false; });
+        el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
+        el.addEventListener('mouseleave', (e) => { keys[key] = false; });
     };
-    
-    document.getElementById('btn-left').addEventListener('mousedown', () => setMove(-1));
-    document.getElementById('btn-left').addEventListener('touchstart', (e) => { e.preventDefault(); setMove(-1); });
-    document.getElementById('btn-right').addEventListener('mousedown', () => setMove(1));
-    document.getElementById('btn-right').addEventListener('touchstart', (e) => { e.preventDefault(); setMove(1); });
-    document.getElementById('btn-jump').addEventListener('mousedown', () => { if(player.ground) { player.vy = -10; barkTimer = 20; } });
-    document.getElementById('btn-jump').addEventListener('touchstart', (e) => { e.preventDefault(); if(player.ground) { player.vy = -10; barkTimer = 20; } });
-    
-    window.addEventListener('mouseup', () => setMove(0));
-    window.addEventListener('touchend', () => setMove(0));
-    
+    bindBtn('btn-left', 'left');
+    bindBtn('btn-right', 'right');
+    bindBtn('btn-jump', 'jump');
+
+    // Keyboard Handlers
     window.addEventListener('keydown', e => {
-        if(e.code === 'ArrowLeft') setMove(-1);
-        if(e.code === 'ArrowRight') setMove(1);
-        if((e.code === 'ArrowUp' || e.code === 'Space') && player.ground) { player.vy = -10; barkTimer = 20; }
+        if(e.code === 'ArrowLeft') keys.left = true;
+        if(e.code === 'ArrowRight') keys.right = true;
+        if(e.code === 'ArrowUp' || e.code === 'Space') keys.jump = true;
     });
-    window.addEventListener('keyup', e => { if(e.code === 'ArrowLeft' || e.code === 'ArrowRight') setMove(0); });
+    window.addEventListener('keyup', e => {
+        if(e.code === 'ArrowLeft') keys.left = false;
+        if(e.code === 'ArrowRight') keys.right = false;
+        if(e.code === 'ArrowUp' || e.code === 'Space') keys.jump = false;
+    });
 
     loop();
 };
