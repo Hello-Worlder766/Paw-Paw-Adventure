@@ -123,6 +123,8 @@ window.onload = function() {
     let player = { x:30, y:200, vx:0, vy:0, ground:false, dir:1 };
     let vacs = [], bones = [], steaks = [];
     
+    // Jump Toggle to prevent auto-jumping
+    let jumpReleased = true;
     const keys = { left: false, right: false, jump: false };
 
     const LEVELS = [
@@ -217,7 +219,6 @@ window.onload = function() {
     function drawSteak(x, y) {
         ctx.save();
         ctx.translate(x, y);
-        // Meat Slab (Deep Red)
         ctx.fillStyle = '#a22'; 
         ctx.beginPath();
         ctx.moveTo(-12, -8);
@@ -227,13 +228,11 @@ window.onload = function() {
         ctx.closePath();
         ctx.fill();
         
-        // The "T" Bone (Bone White)
         ctx.fillStyle = '#eee';
-        ctx.fillRect(-2, -6, 4, 14); // Vertical part
-        ctx.fillRect(-6, -6, 12, 4); // Top horizontal part
+        ctx.fillRect(-2, -6, 4, 14); 
+        ctx.fillRect(-6, -6, 12, 4); 
         ctx.restore();
         
-        // Power-up Glow
         if(Math.floor(Date.now()/200) % 2) {
             ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
             ctx.fillRect(x-14, y-12, 28, 2);
@@ -254,9 +253,11 @@ window.onload = function() {
         else if (keys.right) { player.vx = 3.2; player.dir = 1; }
         else { player.vx = 0; }
 
-        if (keys.jump && player.ground) {
+        // Only jump if key is pressed AND it was released since the last jump
+        if (keys.jump && player.ground && jumpReleased) {
             player.vy = -10;
             player.ground = false;
+            jumpReleased = false; // Lock the jump until they let go
             barkTimer = 20;
         }
 
@@ -356,9 +357,20 @@ window.onload = function() {
         const el = document.getElementById(id);
         el.addEventListener('mousedown', (e) => { e.preventDefault(); keys[key] = true; });
         el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
-        el.addEventListener('mouseup', (e) => { e.preventDefault(); keys[key] = false; });
-        el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
-        el.addEventListener('mouseleave', (e) => { keys[key] = false; });
+        el.addEventListener('mouseup', (e) => { 
+            e.preventDefault(); 
+            keys[key] = false; 
+            if(key === 'jump') jumpReleased = true; 
+        });
+        el.addEventListener('touchend', (e) => { 
+            e.preventDefault(); 
+            keys[key] = false; 
+            if(key === 'jump') jumpReleased = true; 
+        });
+        el.addEventListener('mouseleave', (e) => { 
+            keys[key] = false; 
+            if(key === 'jump') jumpReleased = true; 
+        });
     };
     bindBtn('btn-left', 'left');
     bindBtn('btn-right', 'right');
@@ -372,7 +384,10 @@ window.onload = function() {
     window.addEventListener('keyup', e => {
         if(e.code === 'ArrowLeft') keys.left = false;
         if(e.code === 'ArrowRight') keys.right = false;
-        if(e.code === 'ArrowUp' || e.code === 'Space') keys.jump = false;
+        if(e.code === 'ArrowUp' || e.code === 'Space') {
+            keys.jump = false;
+            jumpReleased = true; // Key was let go, allow next jump
+        }
     });
 
     loop();
