@@ -215,12 +215,16 @@ window.onload = function() {
         ctx.fillRect(x+4, y-4, 4, 4); ctx.fillRect(x+4, y+0, 4, 4);
     }
 
-    function drawSteak(x, y) {
-        // Steak Sparkle only
-        if(Math.random() > 0.9) {
-            ctx.fillStyle = "white";
-            ctx.fillRect(x + (Math.random()*20-10), y + (Math.random()*20-10), 2, 2);
-        }
+function drawSteak(x, y) {
+
+    // NEW CORRECTED CODE:
+    ctx.fillStyle = '#a22'; // Use the correct deep red for meat
+    ctx.fillRect(x-10, y-6, 20, 12); // Main block is red
+    
+    ctx.fillStyle = '#eee'; // Use stark bone-white
+    ctx.fillRect(x-2, y-6, 4, 12); // Vertical line of 'T'
+    ctx.fillRect(x+2, y-6, 8, 4);  // Horizontal top line of 'T'
+}
         ctx.save();
         ctx.translate(x, y);
         // T-Bone Shape
