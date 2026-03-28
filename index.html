@@ -42,7 +42,7 @@ body {
 
 #treats-ui { color: #ff8c00 !important; font-size: 9px !important; }
 
-canvas {
+#game {
   display: block;
   border: 3px solid #ff8c00;
   box-shadow: 0 0 30px #ff8c0060, 0 0 60px #a0520020;
@@ -52,6 +52,15 @@ canvas {
   z-index: 2;
   width: min(480px, 95vw);
   height: auto;
+}
+
+#stars-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
+  pointer-events: none;
 }
 
 #controls {
@@ -157,7 +166,7 @@ canvas {
 </head>
 <body>
 
-<canvas id="stars-bg" style="position:fixed;top:0;left:0;z-index:0;pointer-events:none;width:0;height:0;"></canvas>
+<canvas id="stars-bg"></canvas>
 
 <div id="ui">
   <span id="level-ui">LEVEL 1</span>
