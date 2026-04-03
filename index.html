@@ -373,55 +373,31 @@ window.onload = function() {
 
     // Pixel-art chicken drumstick — matches reference: round dark-brown bulb + grey bone knob
     function drawChicken(x, y) {
-        ctx.save();
-        ctx.translate(x, y);
-        outlineRect(-8, -14, 18, 18, '#000');
+    ctx.save();
+    ctx.translate(x, y);
 
-        // bone shaft (thin, light grey, angled down-right like the reference)
-        ctx.fillStyle = '#c8c0a8';
-        ctx.fillRect(3,  6, 4, 16);   // shaft
-        ctx.fillRect(2, 10, 6, 14);   // slightly wider mid
+    // bacon shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fillRect(-6, 10, 14, 3);
 
-        // bone knob at bottom (rounded blob)
-        ctx.fillStyle = '#d8d0b8';
-        ctx.fillRect(0, 20, 10, 5);
-        ctx.fillRect(-1,22, 12, 4);
-        ctx.fillRect(1, 24,  8, 3);
+    // outline
+    outlineRect(-8, -6, 18, 16, '#000');
 
-        // darkest outline of meat bulb (largest, bottom layer)
-        ctx.fillStyle = '#3d1a06';
-        ctx.fillRect(-8, -14, 18, 18);
-        ctx.fillRect(-6, -16, 14,  4);
-        ctx.fillRect(-10,-10,  4, 12);
-        ctx.fillRect(8,  -10,  4, 12);
-        ctx.fillRect(-4, -17,  8,  3);
+    // bacon base
+    ctx.fillStyle = '#b22222'; // dark red
+    ctx.fillRect(-6, -4, 14, 12);
 
-        // dark brown base meat
-        ctx.fillStyle = '#7a3010';
-        ctx.fillRect(-6, -13, 14, 16);
-        ctx.fillRect(-4, -15, 10,  4);
-        ctx.fillRect(-8,  -9,  4, 10);
-        ctx.fillRect(6,   -9,  4, 10);
+    // bacon stripes (fat)
+    ctx.fillStyle = '#f5c6a5';
+    ctx.fillRect(-6, -2, 14, 3);
+    ctx.fillRect(-6,  2, 14, 3);
 
-        // mid brown (cooked surface)
-        ctx.fillStyle = '#a84820';
-        ctx.fillRect(-4, -12, 10, 13);
-        ctx.fillRect(-2, -13,  6,  3);
-        ctx.fillRect(-6,  -8,  4,  8);
-        ctx.fillRect(4,   -8,  4,  8);
+    // highlight
+    ctx.fillStyle = '#ff7a7a';
+    ctx.fillRect(-4, -3, 6, 2);
 
-        // highlight — golden crispy top-left of bulb
-        ctx.fillStyle = '#d4781a';
-        ctx.fillRect(-3, -11, 6, 6);
-        ctx.fillRect(-1, -12, 4, 3);
-
-        // sheen dot (top-left, like reference)
-        ctx.fillStyle = '#f0a030';
-        ctx.fillRect(-2, -10, 3, 3);
-        ctx.fillRect(-1, -11, 2, 2);
-
-        ctx.restore();
-    }
+    ctx.restore();
+}
 
     function drawBed(x, y) {
         ctx.fillStyle = '#4a90d9';
