@@ -552,7 +552,58 @@ function loop() {
     update();
     requestAnimationFrame(loop);
 }
+// ==============================
+// INPUT + UI (REQUIRED)
+// ==============================
 
+// COLOR SELECT
+document.querySelectorAll('.color-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+        document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('active-opt'));
+        opt.classList.add('active-opt');
+        selectedDog = parseInt(opt.dataset.idx);
+    });
+});
+
+// START BUTTON
+document.getElementById('start-btn').addEventListener('click', () => {
+    document.getElementById('overlay').style.display = 'none';
+    gameActive = true;
+    init(curLvl);
+});
+
+// KEYBOARD
+window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  keys.left  = true;
+    if (e.key === 'ArrowRight') keys.right = true;
+    if (e.key === 'ArrowUp' || e.key === ' ') keys.jump = true;
+});
+
+window.addEventListener('keyup', e => {
+    if (e.key === 'ArrowLeft')  keys.left  = false;
+    if (e.key === 'ArrowRight') keys.right = false;
+
+    if (e.key === 'ArrowUp' || e.key === ' ') {
+        keys.jump = false;
+        jumpLocked = false;
+    }
+});
+
+// MOBILE
+document.getElementById('btn-left').ontouchstart  = () => keys.left  = true;
+document.getElementById('btn-left').ontouchend    = () => keys.left  = false;
+
+document.getElementById('btn-right').ontouchstart = () => keys.right = true;
+document.getElementById('btn-right').ontouchend   = () => keys.right = false;
+
+document.getElementById('btn-jump').ontouchstart  = () => {
+    if (!jumpLocked) keys.jump = true;
+};
+
+document.getElementById('btn-jump').ontouchend    = () => {
+    keys.jump = false;
+    jumpLocked = false;
+};
 // 🔥 START GAME
 init(curLvl);
 loop();
