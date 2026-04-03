@@ -376,36 +376,30 @@ window.onload = function() {
     ctx.save();
     ctx.translate(x, y);
 
-    // slight bend (makes it feel organic)
-    ctx.rotate(-0.12);
+    // slight bounce animation
+    const bob = Math.sin(Date.now() / 150) * 2;
+    ctx.translate(0, bob);
 
-    // shadow (longer + thinner)
+    // shadow
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
-    ctx.fillRect(-14, 10, 28, 3);
+    ctx.fillRect(-14, 10, 28, 4);
 
-    // outline (irregular silhouette)
-    outlineRect(-14, -8, 28, 18, '#000');
+    // glow (power-up feel)
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#ffd700';
 
-    // base bacon (dark uneven slab)
-    ctx.fillStyle = '#7a1f1f';
-    ctx.fillRect(-12, -6, 24, 14);
+    // main bone (bigger + thicker)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-10, -3, 20, 6);
 
-    // break the rectangle shape (THIS is the key fix)
-    ctx.fillRect(-14, -4, 4, 10);  // left bump
-    ctx.fillRect(10, -2, 4, 12);   // right bump
+    // bone ends (round knobs)
+    ctx.fillRect(-14, -6, 6, 6);
+    ctx.fillRect(-14,  0, 6, 6);
+    ctx.fillRect(  8, -6, 6, 6);
+    ctx.fillRect(  8,  0, 6, 6);
 
-    // fat stripes (NOT perfectly aligned)
-    ctx.fillStyle = '#f2c6a0';
-    ctx.fillRect(-12, -3, 24, 3);
-    ctx.fillRect(-10,  3, 22, 3); // slightly inset = less uniform
-
-    // mid tone (adds depth)
-    ctx.fillStyle = '#a83232';
-    ctx.fillRect(-12, 0, 24, 2);
-
-    // highlight (small + off-center)
-    ctx.fillStyle = '#ff9a9a';
-    ctx.fillRect(-5, -5, 6, 2);
+    // outline (important for contrast)
+    outlineRect(-14, -6, 28, 12, '#000');
 
     ctx.restore();
 }
