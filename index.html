@@ -372,29 +372,33 @@ window.onload = function() {
     }
 
     // Pixel-art chicken drumstick — matches reference: round dark-brown bulb + grey bone knob
-    function drawChicken(x, y) {
+   function drawChicken(x, y) {
     ctx.save();
     ctx.translate(x, y);
 
-    // bacon shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.2)';
-    ctx.fillRect(-6, 10, 14, 3);
+    // shadow (bigger so it feels grounded)
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(-10, 12, 22, 4);
 
-    // outline
-    outlineRect(-8, -6, 18, 16, '#000');
+    // outline (bigger shape)
+    outlineRect(-12, -8, 26, 20, '#000');
 
-    // bacon base
-    ctx.fillStyle = '#b22222'; // dark red
-    ctx.fillRect(-6, -4, 14, 12);
+    // base bacon (irregular shape)
+    ctx.fillStyle = '#8b1e1e';
+    ctx.fillRect(-10, -6, 22, 16);
 
-    // bacon stripes (fat)
-    ctx.fillStyle = '#f5c6a5';
-    ctx.fillRect(-6, -2, 14, 3);
-    ctx.fillRect(-6,  2, 14, 3);
+    // jagged edges to break "cake" look
+    ctx.fillRect(-12, -4, 4, 10);
+    ctx.fillRect(10, -2, 4, 12);
 
-    // highlight
-    ctx.fillStyle = '#ff7a7a';
-    ctx.fillRect(-4, -3, 6, 2);
+    // fat stripes (thicker + uneven)
+    ctx.fillStyle = '#f2c1a0';
+    ctx.fillRect(-10, -4, 22, 4);
+    ctx.fillRect(-10,  2, 22, 4);
+
+    // highlight strip (adds dimension)
+    ctx.fillStyle = '#ff8a8a';
+    ctx.fillRect(-6, -5, 10, 2);
 
     ctx.restore();
 }
