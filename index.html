@@ -524,7 +524,7 @@ document.getElementById('ov-msg').textContent = `Collect all the bones 🦴 and 
     function win() {
         if (curLvl < LEVELS.length - 1) {
             curLvl++;
-            showOverlay('LEVEL CLEAR!', `Amazing job, ${PET_NAME}!\n\n${OWNER_MSG}`, 'NEXT LEVEL', false);
+            showOverlay('LEVEL CLEAR!', `Amazing job, ${PET_NAME}!\n\n${OWNER_MSG}`, 'NEXT LEVEL', true);
         } else {
             gameActive = false; // stop game
 
