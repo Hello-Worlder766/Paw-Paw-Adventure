@@ -1,0 +1,22 @@
+🐶 Your Custom Dog Game
+
+Thank you for your purchase!
+
+HOW TO PLAY:
+
+Option 1 (Recommended):
+1. Unzip the folder
+2. Open the folder
+3. Double-click "index.html"
+4. The game will open in your browser
+
+Option 2 (If file doesn’t open):
+Right-click "index.html" → Open with → Chrome or Safari
+
+IMPORTANT:
+- This game works best on a computer or phone browser
+- If you're on iPhone, open using Safari
+
+If you have any issues, feel free to reach out!
+
+Enjoy your game 🐾
