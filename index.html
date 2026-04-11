@@ -39,15 +39,15 @@ canvas {
     touch-action: none;
     max-width: 95vw;
 }
-#controls { display: flex; gap: 12px; margin-top: 12px; z-index: 2; }
+#controls { display: flex; gap: 24px; margin-top: 16px; z-index: 2; }
 .btn {
     background: #333;
     border: 2px solid #4a90d9;
     color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
+    padding: 22px 36px;
+    border-radius: 12px;
     font-family: monospace;
-    font-size: 10px;
+    font-size: 14px;
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
@@ -627,20 +627,12 @@ window.addEventListener('keyup', e => {
 });
 
 // MOBILE
-document.getElementById('btn-left').ontouchstart  = () => keys.left  = true;
-document.getElementById('btn-left').ontouchend    = () => keys.left  = false;
-
-document.getElementById('btn-right').ontouchstart = () => keys.right = true;
-document.getElementById('btn-right').ontouchend   = () => keys.right = false;
-
-document.getElementById('btn-jump').ontouchstart  = () => {
-    if (!jumpLocked) keys.jump = true;
-};
-
-document.getElementById('btn-jump').ontouchend    = () => {
-    keys.jump = false;
-    jumpLocked = false;
-};
+document.getElementById('btn-left').addEventListener('touchstart',  e => { e.preventDefault(); keys.left  = true; });
+document.getElementById('btn-left').addEventListener('touchend',    e => { e.preventDefault(); keys.left  = false; });
+document.getElementById('btn-right').addEventListener('touchstart', e => { e.preventDefault(); keys.right = true; });
+document.getElementById('btn-right').addEventListener('touchend',   e => { e.preventDefault(); keys.right = false; });
+document.getElementById('btn-jump').addEventListener('touchstart',  e => { e.preventDefault(); if (!jumpLocked) keys.jump = true; });
+document.getElementById('btn-jump').addEventListener('touchend',    e => { e.preventDefault(); keys.jump = false; jumpLocked = false; });
 // 🔥 START GAME
 init(curLvl);
 loop();
