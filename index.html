@@ -17,6 +17,7 @@ body {
     font-family: monospace;
     overflow: hidden;
     user-select: none;
+    touch-action: pan-x pan-y;
 }
 #ui {
     position: relative;
@@ -48,6 +49,9 @@ canvas {
     font-family: monospace;
     font-size: 10px;
     cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 #overlay {
     position: fixed;
