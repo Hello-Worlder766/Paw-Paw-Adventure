@@ -65,17 +65,17 @@ canvas {
 #overlay p { color: #ccc; font-size: 8px; line-height: 1.8; margin-bottom: 20px; white-space: pre-line; }
 .color-select { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
 .color-opt { width: 45px; height: 45px; border: 3px solid #fff; cursor: pointer; border-radius: 5px; }
-.active-opt { border-color: #4a90d9; transform: scale(1.1); box-shadow: 0 0 10px #4a90d9; }
-.active-opt { border-color: #4a90d9; transform: scale(1.1); box-shadow: 0 0 10px #4a90d9; }
 .color-opt span {
     display: block;
     color: #fff;
     font-size: 6px;
     text-align: center;
-    margin-top: 28px;
-    -webkit-text-stroke: 0.5px #000;
+    margin-top: 4px;
     pointer-events: none;
 }
+
+.color-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.color-wrap span { color: #fff; font-size: 6px; }
 
 #start-btn {
     background: #4a90d9; border: none; color: white;
@@ -104,14 +104,14 @@ canvas {
 <div id="overlay">
   <h1 id="ov-title" id="ov-title"></h1>
     <p id="ov-msg"></p>
-
+<p style="color:#fff; font-size:7px; margin-bottom:8px;">Pick your dog's color:</p>
 <div class="color-select">
-    <div class="color-opt active-opt" data-idx="0" style="background:#edc9af"><span>Tan</span></div>
-    <div class="color-opt" data-idx="1" style="background:#222222"><span>Black</span></div>
-    <div class="color-opt" data-idx="2" style="background:#eeeeee"><span>White</span></div>
-    <div class="color-opt" data-idx="3" style="background:#e8a825"><span>Golden</span></div>
-    <div class="color-opt" data-idx="4" style="background:#7e5835"><span>Brown</span></div>
-    <div class="color-opt" data-idx="5" style="background:#888888"><span>Grey</span></div>
+    <div class="color-wrap"><div class="color-opt active-opt" data-idx="0" style="background:#edc9af"></div><span>Tan</span></div>
+    <div class="color-wrap"><div class="color-opt" data-idx="1" style="background:#222222"></div><span>Black</span></div>
+    <div class="color-wrap"><div class="color-opt" data-idx="2" style="background:#eeeeee"></div><span>White</span></div>
+    <div class="color-wrap"><div class="color-opt" data-idx="3" style="background:#e8a825"></div><span>Golden</span></div>
+    <div class="color-wrap"><div class="color-opt" data-idx="4" style="background:#7e5835"></div><span>Brown</span></div>
+    <div class="color-wrap"><div class="color-opt" data-idx="5" style="background:#888888"></div><span>Grey</span></div>
 </div>
 
   <button id="start-btn">START PLAYING</button>
@@ -127,7 +127,7 @@ window.onload = function() {
     const OWNER_NAME = params.get("owner") || ("{{OWNER_NAME}}".includes("{{")    ? "Your Human"      : "{{OWNER_NAME}}");
     const OWNER_MSG  = params.get("msg")   || ("{{OWNER_MESSAGE}}".includes("{{") ? "You made it home!" : "{{OWNER_MESSAGE}}");
     document.getElementById('ov-title').textContent = `${PET_NAME}'S ADVENTURE!`;
-document.getElementById('ov-msg').textContent = `Collect all the bones 🦴 and reach the Dog House!\nWatch out for Vacuums 🤖 — grab the big bone for protection!\n\nUse ◀ ▶ to move and ▲ to jump.\n\nWith love from ${OWNER_NAME}`;
+document.getElementById('ov-msg').textContent = `Collect all the bones 🦴 and reach the Dog House!\nWatch out for Vacuums 🤖 — grab the big bone 🦴 for protection!\n\nUse ◀ ▶ to move and ▲ to jump.\n\nWith love from ${OWNER_NAME}`;
 
     // Rule: dark dog (Black, Brown) → LIGHT bg so dog pops
     //       light dog (Tan, White, Golden, Grey) → DARK bg
